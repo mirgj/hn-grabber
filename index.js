@@ -6,22 +6,50 @@ import worker from './workers/hn-worker';
 
 if (cluster.isMaster) {
   console.log(`Master ${process.pid} is running`);
+  const now = Math.floor(Date.now() / 1000);
+  const years = 365 * 24 * 60 * 60 * 2; // 2 years
+  const buffer = 30 * 24 * 60 * 60 * 4; // 4 months
+  let keep = true;
 
-  request(config.base_url + 'maxitem.json').then((data) => {
+  (async() => {
+    console.log('Getting the max_id basing on the time of the news to import...');
+    let actual_max = await request(config.base_url + 'maxitem.json');
+    let max_id = Number(actual_max);
+    actual_max = Number(actual_max);
+
+    do {
+      const url = config.base_url + 'item/' + max_id + '.json';
+      let item = await request(url);
+      item = JSON.parse(item);
+      if (!item || !item.time) {
+        max_id = Math.floor(max_id / 2);
+        continue;
+      }
+      keep = (Number(item.time) - buffer) > (now - years);
+
+      if ((Number(item.time) + buffer) < (now - years)) {
+        max_id += Math.floor(max_id / 2);
+        keep = true;
+      } else if (keep) {
+        max_id = Math.floor(max_id / 2);
+      }
+    } while (keep);
+
     const cpus = os.cpus().length;
-    let max_id = Number(data);
-    const segment = Math.floor(max_id / cpus);
+    const segment = Math.floor((actual_max - max_id) / cpus);
+
+    console.log('Creating sub process...');
 
     for (let i = 0; i < cpus; i++) {
       cluster.fork({
-        max_id: max_id,
-        min_id: max_id - segment,
+        max_id: actual_max,
+        min_id: actual_max - segment,
       });
 
-      max_id -= segment - 1;
+      actual_max -= segment - 1;
     }
 
-  });
+  })();
 
   cluster.on('exit', (worker, code, signal) => {
     console.log(`worker ${worker.process.pid} died`);

@@ -5,16 +5,13 @@ import mapper from '../mappers/index';
 
 const process = async(max_id, min_id) => {
   try {
-    const now = Math.floor(Date.now() / 1000);
-    const years = 365 * 24 * 60 * 60 * 2;
     const regex = new RegExp(config.to_find, 'i');
     const importer = new MongoImporter(config.importers.mongo);
-    let keep = true;
     let elements = 0;
 
     do {
       const url = config.base_url + 'item/' + max_id + '.json';
-      console.log('Getting: ' + url);
+      // console.log('Getting: ' + url);
 
       const result = await request(url);
       const item = JSON.parse(result);
@@ -28,12 +25,8 @@ const process = async(max_id, min_id) => {
           console.log('Item imported...');
           elements++;
         }
-
-        keep = item.time + years > now || max_id > min_id;
       }
-
-      max_id--;
-    } while (keep);
+    } while (max_id-- > min_id);
 
     await importer.close();
 
