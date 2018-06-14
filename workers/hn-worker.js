@@ -19,7 +19,7 @@ const process = async(max_id, min_id) => {
       const result = await request(url);
       const item = JSON.parse(result);
       if (!item) console.error('empty item, will be skipped');
-      if (item && item.type === 'story' && item.url) {
+      if (item && item.type === 'story' && item.url && !item.deleted) {
         if (regex.exec(item.title) !== null || regex.exec(item.url) !== null) {
           console.log('Item found. Importing...');
           const mappedObject = mapper(config.importers.mongo.collections.stories.mapper)(config.importers.mongo.collections.stories.mappings, item);
