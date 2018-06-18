@@ -1,7 +1,7 @@
 # hn-grabber
 
 ## Overview
-A small utility helpful to grab data from [hacker news](https://news.ycombinator.com/). It uses the [official API](https://github.com/HackerNews/API) to retrieve the data according to the config file.
+A small utility helpful to grab data from [hacker news](https://news.ycombinator.com/). It uses the [official API](https://github.com/HackerNews/API) to retrieve the data and store it accordingly.
 
 ## Getting started
 
