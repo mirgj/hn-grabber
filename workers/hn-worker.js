@@ -11,20 +11,24 @@ const process = async(max_id, min_id) => {
 
     do {
       const url = config.base_url + 'item/' + max_id + '.json';
-      // console.log('Getting: ' + url);
 
-      const result = await request(url);
-      const item = JSON.parse(result);
-      if (!item) console.error('empty item, will be skipped');
-      if (item && item.type === 'story' && item.url && !item.deleted) {
-        if (regex.exec(item.title) !== null || regex.exec(item.url) !== null) {
-          console.log('Item found. Importing...');
-          const mappedObject = mapper(config.importers.mongo.collections.stories.mapper)(config.importers.mongo.collections.stories.mappings, item);
-          await importer.import(config.importers.mongo.collections.stories, mappedObject);
+      try {
+        const result = await request(url);
+        const item = JSON.parse(result);
 
-          console.log('Item imported...');
-          elements++;
+        if (!item) console.error('empty item, will be skipped');
+        if (item && item.type === 'story' && item.url && !item.deleted) {
+          if (regex.exec(item.title) !== null || regex.exec(item.url) !== null) {
+            console.log('Item found. Importing...');
+            const mappedObject = mapper(config.importers.mongo.collections.stories.mapper)(config.importers.mongo.collections.stories.mappings, item);
+            await importer.import(config.importers.mongo.collections.stories, mappedObject);
+
+            console.log('Item imported...');
+            elements++;
+          }
         }
+      } catch (err) {
+        console.error(`Error processing the item with ID ${max_id}: ${err}, it will be skipped`);
       }
     } while (max_id-- > min_id);
 
