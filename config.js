@@ -2,7 +2,7 @@ import { ObjectID } from 'mongodb';
 
 export default {
   base_url: 'https://hacker-news.firebaseio.com/v0/',
-  to_find: '(cryptocurrency|cryptocurrencies|bitcoin|ethereum|solidity|blockchain)',
+  to_find: '(cryptocurrency|cryptocurrencies|bitcoin|ethereum|solidity|blockchain|smart contract)',
   importers: {
     mongo: {
       url: 'mongodb://localhost:27017/',
