@@ -25,7 +25,10 @@ const storyMapper = (mappings, obj) => {
     }
 
     if (el.transformer) {
-      item[el.to] = transformers(el.transformer)(obj[el.from]);
+      if (el.transformer === Object(el.transformer))
+        item[el.to] = transformers(el.transformer.name)(obj[el.from], el.transformer.config);
+      else item[el.to] = transformers(el.transformer)(obj[el.from]);
+
       return;
     }
 

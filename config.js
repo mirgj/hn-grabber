@@ -6,7 +6,7 @@ export default {
   importers: {
     mongo: {
       url: 'mongodb://localhost:27017/',
-      db: 'crypto-hn',
+      db: 'pico-news',
       collections: {
         stories: {
           name: 'stories',
@@ -14,6 +14,13 @@ export default {
           mappings: [{
             from: 'title',
             to: 'title',
+            transformer: {
+              name: 'replacer',
+              config: {
+                old_string: 'HN',
+                new_string: 'PN',
+              },
+            },
           }, {
             from: 'url',
             to: 'url',
