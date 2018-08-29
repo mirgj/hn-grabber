@@ -1,8 +1,8 @@
 import { ObjectID } from 'mongodb';
 
 export default {
-  base_url: 'https://hacker-news.firebaseio.com/v0/',
-  to_find: '(cryptocurrency|cryptocurrencies|bitcoin|ethereum|solidity|blockchain|smart contract)',
+  base_url: 'https://hn.algolia.com/api/v1/search?query=',
+  to_find: 'cryptocurrency|cryptocurrencies|bitcoin|ethereum|solidity|blockchain|smart contract',
   importers: {
     mongo: {
       url: 'mongodb://localhost:27017/',
@@ -24,18 +24,18 @@ export default {
           }, {
             from: 'url',
             to: 'url',
+            transformer: 'unescape',
           }, {
             from: 'url',
             to: 'base_url',
             transformer: 'baseUrl',
           }, {
-            from: 'score',
+            from: 'points',
             to: 'karma',
-            default: 1,
           }, {
-            from: 'time',
+            from: 'created_at',
             to: 'created_on',
-            transformer: 'timestamp',
+            transformer: 'dateParser',
           }, {
             to: 'user_id',
             default: new ObjectID(),
