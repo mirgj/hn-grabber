@@ -13,13 +13,13 @@ const process = async(word) => {
 
     do {
       const url = config.base_url + word + '&page=' + (page++);
-      
+
       try {
         const jsonResult = await request(url);
         const parsedResult = JSON.parse(jsonResult);
         hasResult = parsedResult.hits.length > 0;
-        
-        for(let i= 0; i < parsedResult.hits.length; i++) {
+
+        for (let i = 0; i < parsedResult.hits.length; i++) {
           const item = parsedResult.hits[i];
           if (!item) console.error('empty item, will be skipped');
           if (item && item.title && item.url) {
