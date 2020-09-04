@@ -17,7 +17,7 @@
   "author": "mirgj",
   "license": "MIT",
   "dependencies": {
-    "mongodb": "^3.0.10",
+    "mongodb": "^3.1.13",
     "request": "^2.87.0",
     "request-promise-native": "^1.0.5"
   },
